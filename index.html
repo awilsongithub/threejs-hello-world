@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+
+	<canvas id="c"></canvas>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r120/three.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+
+	<script>
+
+		var canvas = document.querySelector('#c');
+		var renderer = new THREE.WebGLRenderer({ canvas })
+		renderer = customizeRenderer(renderer);
+		var camera = getCamera();
+		const scene = new THREE.Scene();
+		const light = getLight();
+		scene.add(light);
+		var geometry = getGeometry();
+		material = new THREE.MeshPhongMaterial({ color: 0x00ff00 })
+		var cube = new THREE.Mesh(geometry, material);
+		scene.add(cube);
+		renderer.render(scene, camera);
+		requestAnimationFrame(renderFunction);
+
+		function makeInstance(geometry, color, x, y, z) {
+			const material = new THREE.MeshPhongMaterial({ color })
+			const cube = new THREE.Mesh(geometry, material);
+			scene.add(cube);
+			cube.position.x = x;
+			cube.postion.y = y;
+			cube.postion.z = z;
+			return cube;
+		}
+
+		function customizeRenderer(r) {
+			r.setClearColor("#e5e5e5");
+			r.setSize(window.innerWidth, window.innerHeight);
+			return renderer;
+		}
+
+
+
+
+		function renderFunction(time) {
+			time *= 0.001; // convert time to seconds
+			cube.rotation.x = time / 7; // in radians
+			cube.rotation.y = time / 7;
+			renderer.render(scene, camera);
+			requestAnimationFrame(renderFunction); // reqAnimFrame is req to browser taking a fn to be called
+		}
+
+		function getCamera() {
+			const fov = 75; // vertical degrees field of view
+			const aspect = window.innerWidth / window.innerHeight; // twice as wide as high
+			const near = 0.1;
+			const far = 5;
+			const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+			camera.position.z = 2; // back up 
+			return camera;
+		}
+
+		function getGeometry() {
+			const boxWidth = 0.3;
+			const boxHeight = 0.3;
+			const boxDepth = 0.3;
+			var geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+			return geometry;
+		}
+
+		function getLight() {
+			const color = 0xFFFFFF;
+			const intensity = 1;
+			const light = new THREE.DirectionalLight(color, intensity);
+			light.position.set(-1, 2, 4);
+			return light;
+		}
+
+
+
+
+	</script>
+
+</body>
+
+</html>
